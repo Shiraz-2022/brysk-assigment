@@ -1,39 +1,34 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { Stack } from "expo-router";
+import ErrorBoundary from "react-native-error-boundary";
+import { errorHandler } from "utils/errorHandler";
+import AppProviders from "context/AppProvider";
+import ErrorFallbackComponent from "components/global/ErrorFallbackComponent";
+import {
+  setJSExceptionHandler,
+  setNativeExceptionHandler,
+} from "react-native-exception-handler";
+import "global.css";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  //handle native and js exceptions and send them to the error handler.
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+  setJSExceptionHandler((error, isFatal) => {
+    errorHandler(error);
+  }, true);
 
-  if (!loaded) {
-    return null;
-  }
+  // setNativeExceptionHandler((exceptionString) => {
+  //   errorHandler(exceptionString);
+  // }, false);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <ErrorBoundary
+      onError={errorHandler}
+      FallbackComponent={ErrorFallbackComponent}
+    >
+      <AppProviders>
+        <ErrorFallbackComponent />
+        <Stack />
+      </AppProviders>
+    </ErrorBoundary>
   );
 }
