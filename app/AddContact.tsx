@@ -9,6 +9,7 @@ import React, { useState, useEffect } from "react";
 import { useLocalSearchParams, router } from "expo-router";
 import ContactInput from "components/ContactInput";
 import { addContact, updateContact } from "utils/asyncStorage";
+import { useErrorHandler } from "context/ErrorHandlerContext";
 
 export default function AddContact() {
   const [name, setName] = useState("");
@@ -18,6 +19,7 @@ export default function AddContact() {
 
   // Fetching the contact data from route params using useLocalSearchParams
   const { contact } = useLocalSearchParams();
+  const { setError } = useErrorHandler();
 
   useEffect(() => {
     if (contact) {
@@ -32,11 +34,11 @@ export default function AddContact() {
   const handleSave = async () => {
     // Validate name and phone
     if (!name.trim()) {
-      Alert.alert("Validation Error", "Name is required.");
+      setError(new Error("Validation Error: Name is required."));
       return;
     }
     if (!phone.trim()) {
-      Alert.alert("Validation Error", "Phone number is required.");
+      setError(new Error("Validation Error: Phone number is required."));
       return;
     }
 
