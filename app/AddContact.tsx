@@ -1,4 +1,10 @@
-import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  Alert,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { useLocalSearchParams, router } from "expo-router";
 import ContactInput from "components/ContactInput";
@@ -24,6 +30,16 @@ export default function AddContact() {
   }, [contact]);
 
   const handleSave = async () => {
+    // Validate name and phone
+    if (!name.trim()) {
+      Alert.alert("Validation Error", "Name is required.");
+      return;
+    }
+    if (!phone.trim()) {
+      Alert.alert("Validation Error", "Phone number is required.");
+      return;
+    }
+
     const newContact = {
       id: contact ? JSON.parse(contact as string).id : Date.now().toString(), // Use existing ID if updating, else create new one
       name,
