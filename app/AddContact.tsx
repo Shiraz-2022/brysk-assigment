@@ -35,7 +35,7 @@ export default function AddContact() {
     if (contact) {
       await updateContact(newContact);
       console.log("Contact Updated:", newContact);
-      router.push({
+      router.replace({
         pathname: "/singleContact",
         params: { contact: JSON.stringify(newContact) },
       });

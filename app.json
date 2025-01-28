@@ -9,14 +9,18 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.shiraz2023.contacts"
+      "package": "com.shiraz2023.contacts",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +41,18 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c8423a36-4045-424d-8f59-91632af698cf"
+      }
+    },
+    "owner": "shiraz2023",
+    "updates": {
+      "url": "https://u.expo.dev/c8423a36-4045-424d-8f59-91632af698cf"
     }
   }
 }

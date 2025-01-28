@@ -28,7 +28,7 @@ export default function SingleContact() {
   const handleConfirmDelete = async () => {
     await deleteContact(parsedContact.id);
     setDeleteModal(false);
-    router.push("/");
+    router.replace("/");
   };
 
   return (
