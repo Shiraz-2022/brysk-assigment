@@ -12,16 +12,10 @@ module.exports = {
           light: "#171719",
         },
         accent: {},
-        neutral: {
-          light: "#FFAC34",
-          default: "#6F6097",
-        },
+        neutral: {},
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
-      },
-      borderRadius: {
-        xl: "1.5rem",
       },
     },
   },

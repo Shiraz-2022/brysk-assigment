@@ -8,11 +8,11 @@ import Feather from "@expo/vector-icons/Feather";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { IContact } from "types/contact";
 import DeleteModal from "components/modals/DeleteModal";
-import { deleteContact } from "utils/asyncStorage"; // Import the function to delete contact
+import { deleteContact } from "utils/asyncStorage";
 
 export default function SingleContact() {
   const params = useLocalSearchParams();
-  const { contact } = params;
+  const { contact, color } = params;
   const parsedContact: IContact = JSON.parse(contact as string);
 
   const [deleteModal, setDeleteModal] = useState(false);
@@ -26,9 +26,9 @@ export default function SingleContact() {
   };
 
   const handleConfirmDelete = async () => {
-    await deleteContact(parsedContact.id); // Delete the contact by its ID
-    setDeleteModal(false); // Close the delete modal
-    router.back(); // Navigate back to the previous screen after deletion
+    await deleteContact(parsedContact.id);
+    setDeleteModal(false);
+    router.push("/");
   };
 
   return (
@@ -40,7 +40,10 @@ export default function SingleContact() {
         onPress={() => router.back()}
       />
       <View className="bg-secondary-light rounded-lg justify-center items-center mt-20 mb-10 p-4 relative">
-        <View className="rounded-full h-24 w-24 bg-red-200 absolute left-1/2 -top-12 -translate-x-6 justify-center items-center">
+        <View
+          style={{ backgroundColor: color }}
+          className="rounded-full h-24 w-24 bg-red-200 absolute left-1/2 -top-12 -translate-x-6 justify-center items-center"
+        >
           <Text className="text-white text-2xl">
             {parsedContact.name.charAt(0).toUpperCase()}
           </Text>
@@ -86,7 +89,7 @@ export default function SingleContact() {
       <DeleteModal
         visible={deleteModal}
         onClose={() => setDeleteModal(false)}
-        onDelete={handleConfirmDelete} // Call handleConfirmDelete on delete confirmation
+        onDelete={handleConfirmDelete}
       />
     </SafeAreaView>
   );

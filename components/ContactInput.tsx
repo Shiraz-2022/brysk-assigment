@@ -13,7 +13,7 @@ interface IContactInputProps {
     | "numeric"
     | "decimal-pad";
   multiline?: boolean;
-  iconName?: string; // Pass the icon name (e.g., "person", "mail", "call")
+  iconName?: string;
 }
 
 export default function ContactInput({

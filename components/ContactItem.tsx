@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { IContact } from "types/contact";
 import { randomColors } from "constants/constant";
@@ -10,16 +10,20 @@ interface Props {
 }
 
 function ContactItem({ contact, isLastItem }: Props) {
-  const { name, email, phone } = contact;
+  const { name, phone } = contact;
 
-  const getRandomColor = () => {
-    return randomColors[Math.floor(Math.random() * randomColors.length)];
-  };
+  const [randomColor, setRandomColor] = useState<string | null>(null);
+
+  // Generate the random color only once when the component mounts
+  useEffect(() => {
+    const color = randomColors[Math.floor(Math.random() * randomColors.length)];
+    setRandomColor(color);
+  }, []);
 
   const handleContactSelect = () => {
     router.push({
       pathname: "/singleContact",
-      params: { contact: JSON.stringify(contact) },
+      params: { contact: JSON.stringify(contact), color: randomColor },
     });
   };
 
@@ -31,8 +35,8 @@ function ContactItem({ contact, isLastItem }: Props) {
       >
         <View className="flex-row flex-1 items-center">
           <View
-            // style={{ backgroundColor: getRandomColor() }}
-            className="bg-red-200 rounded-full mr-5 justify-center items-center h-10 w-10"
+            style={{ backgroundColor: randomColor, borderRadius: "50%" }}
+            className="mr-5 justify-center items-center h-10 w-10"
           >
             <Text className="text-lg font-bold text-white">
               {name.charAt(0).toLocaleUpperCase()}
@@ -41,7 +45,7 @@ function ContactItem({ contact, isLastItem }: Props) {
           <View>
             <Text className="text-white font-normal text-lg">{name}</Text>
             <Text className="text-white font-semibold text-xs">
-              mobile {phone}
+              mobile {phone ? phone : "-"}
             </Text>
           </View>
         </View>

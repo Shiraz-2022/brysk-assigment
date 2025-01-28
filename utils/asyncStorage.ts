@@ -1,13 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Key for storing all contacts in AsyncStorage
 const CONTACTS_STORAGE_KEY = "contacts";
 
-// Helper to fetch all contacts from AsyncStorage
 export const getContacts = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem(CONTACTS_STORAGE_KEY);
-    return jsonValue != null ? JSON.parse(jsonValue) : []; // Return empty array if no contacts
+    return jsonValue != null ? JSON.parse(jsonValue) : [];
   } catch (e) {
     console.error("Failed to fetch contacts:", e);
     return [];
@@ -46,7 +44,7 @@ export const updateContact = async (updatedContact: any) => {
       (contact: any) => contact.id === updatedContact.id
     );
     if (index !== -1) {
-      contacts[index] = updatedContact; // Update the contact
+      contacts[index] = updatedContact;
       await AsyncStorage.setItem(
         CONTACTS_STORAGE_KEY,
         JSON.stringify(contacts)
@@ -60,11 +58,11 @@ export const updateContact = async (updatedContact: any) => {
 // Delete a contact by ID
 export const deleteContact = async (id: string) => {
   try {
-    const contacts = await getContacts(); // Fetch current contacts
+    const contacts = await getContacts();
     const updatedContacts = contacts.filter(
       (contact: any) => contact.id !== id
-    ); // Remove contact by ID
-    await saveContacts(updatedContacts); // Save updated contacts array
+    );
+    await saveContacts(updatedContacts);
   } catch (e) {
     console.error("Failed to delete contact:", e);
   }

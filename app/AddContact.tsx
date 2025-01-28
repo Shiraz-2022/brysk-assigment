@@ -2,10 +2,9 @@ import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useLocalSearchParams, router } from "expo-router";
 import ContactInput from "components/ContactInput";
-import { addContact, updateContact } from "utils/asyncStorage"; // Import updateContact to handle updates
+import { addContact, updateContact } from "utils/asyncStorage";
 
 export default function AddContact() {
-  // Default state for new contact
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -16,7 +15,6 @@ export default function AddContact() {
 
   useEffect(() => {
     if (contact) {
-      // If contact exists in the params, parse it and set state values
       const parsedContact = JSON.parse(contact as string);
       setName(parsedContact.name || "");
       setPhone(parsedContact.phone || "");
@@ -35,7 +33,6 @@ export default function AddContact() {
     };
 
     if (contact) {
-      // If there's a contact, update it
       await updateContact(newContact);
       console.log("Contact Updated:", newContact);
       router.push({
@@ -43,7 +40,6 @@ export default function AddContact() {
         params: { contact: JSON.stringify(newContact) },
       });
     } else {
-      // Otherwise, add a new contact
       await addContact(newContact);
       console.log("Contact Saved:", newContact);
       router.back();

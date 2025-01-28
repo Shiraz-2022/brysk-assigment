@@ -1,9 +1,10 @@
-import { Contact } from "types/contact";
+import { IContact } from "types/contact";
 
-export const groupAndSortContacts = (contacts: Contact[]) => {
-  const sortedContacts = contacts.sort((a, b) => a.name.localeCompare(b.name));
+export const groupAndSortContacts = (contacts: IContact[]) => {
+  const sortedContacts = contacts.sort((a, b) => a.name.localeCompare(b.name)); // sort alphabetically
+  // group section wise
   const groupedContacts = sortedContacts.reduce(
-    (acc: Record<string, Contact[]>, contact) => {
+    (acc: Record<string, IContact[]>, contact) => {
       const firstLetter = contact.name[0].toUpperCase();
       if (!acc[firstLetter]) {
         acc[firstLetter] = [];
@@ -22,8 +23,9 @@ export const groupAndSortContacts = (contacts: Contact[]) => {
     }));
 };
 
+//for searching
 export const filterContacts = (
-  sections: { title: string; data: Contact[] }[],
+  sections: { title: string; data: IContact[] }[],
   search: string
 ) => {
   return sections
