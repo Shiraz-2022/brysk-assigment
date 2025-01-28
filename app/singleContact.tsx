@@ -8,8 +8,9 @@ import Feather from "@expo/vector-icons/Feather";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { IContact } from "types/contact";
 import DeleteModal from "components/modals/DeleteModal";
+import { deleteContact } from "utils/asyncStorage"; // Import the function to delete contact
 
-export default function singleContact() {
+export default function SingleContact() {
   const params = useLocalSearchParams();
   const { contact } = params;
   const parsedContact: IContact = JSON.parse(contact as string);
@@ -20,8 +21,14 @@ export default function singleContact() {
     router.push({ pathname: "/AddContact", params: { contact } });
   };
 
-  const handleDeleteContact = () => {
+  const handleDeleteContact = async () => {
     setDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    await deleteContact(parsedContact.id); // Delete the contact by its ID
+    setDeleteModal(false); // Close the delete modal
+    router.back(); // Navigate back to the previous screen after deletion
   };
 
   return (
@@ -44,7 +51,7 @@ export default function singleContact() {
         <View className="flex-row items-center">
           <Text className="text-white font-thin text-sm mr-2">Mobile</Text>
           <Text className="text-white text-lg font-normal">
-            {parsedContact.phone}
+            {parsedContact.phone ? parsedContact.phone : "-"}
           </Text>
         </View>
       </View>
@@ -52,11 +59,15 @@ export default function singleContact() {
       <View className="bg-secondary-light rounded-lg p-4">
         <View>
           <Text className="text-white font-normal text-lg mb-5">Email</Text>
-          <Text className="text-white mb-5">{parsedContact.email}</Text>
+          <Text className="text-white mb-5">
+            {parsedContact.email ? parsedContact.email : "-"}
+          </Text>
         </View>
         <View>
           <Text className="text-white font-normal text-lg mb-5">Address</Text>
-          <Text className="text-white ">{parsedContact.address}</Text>
+          <Text className="text-white">
+            {parsedContact.address ? parsedContact.address : "-"}
+          </Text>
         </View>
       </View>
       <View className="flex-row mx-auto mt-auto">
@@ -75,7 +86,7 @@ export default function singleContact() {
       <DeleteModal
         visible={deleteModal}
         onClose={() => setDeleteModal(false)}
-        onDelete={() => {}}
+        onDelete={handleConfirmDelete} // Call handleConfirmDelete on delete confirmation
       />
     </SafeAreaView>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   TextInput,
@@ -12,13 +12,27 @@ import { IContact } from "types/contact";
 import { groupAndSortContacts, filterContacts } from "utils/contactUtils";
 import Feather from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { contacts } from "constants/mockData";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { getContacts } from "utils/asyncStorage"; // Assuming you have a utility function to get contacts
+import { useFocusEffect } from "@react-navigation/native"; // Importing the hook
 
 export default function ContactList() {
   const [search, setSearch] = useState("");
+  const [contacts, setContacts] = useState<IContact[]>([]); // Contact state
   const [isSearchActive, setIsSearchActive] = useState(false);
+
+  // Fetch contacts when the component mounts or comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchContacts = async () => {
+        const storedContacts = await getContacts(); // Get contacts from storage or API
+        setContacts(storedContacts); // Set contacts state
+      };
+      fetchContacts();
+    }, []) // Empty dependency array ensures it runs every time the screen is focused
+  );
+
   const sections = groupAndSortContacts(contacts); // Group and sort contacts by the first letter of the name
   const filteredSections = filterContacts(sections, search);
 
@@ -84,7 +98,7 @@ export default function ContactList() {
   };
 
   return (
-    <SafeAreaView className="flex-1 p-4 bg-primary-default">
+    <SafeAreaView className="flex-1 p-4 bg-primary-default h-full">
       {/* Header */}
       <View className="flex-row items-center justify-between mb-5">
         <Text className="text-white text-xl font-bold">Contacts</Text>
@@ -133,7 +147,15 @@ export default function ContactList() {
           transform: [{ translateY: contactListAnim }],
         }}
       >
-        <ContactSectionList sections={filteredSections} />
+        {filteredSections.length > 0 ? (
+          <ContactSectionList sections={filteredSections} />
+        ) : (
+          <View className="items-center mt-64">
+            <Text className="text-white font-semibold">
+              No contacts to display
+            </Text>
+          </View>
+        )}
       </Animated.View>
     </SafeAreaView>
   );
