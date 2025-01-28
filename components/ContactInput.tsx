@@ -35,7 +35,7 @@ export default function ContactInput({
         />
       )}
       <TextInput
-        className="flex-1 text-black"
+        className="flex-1 text-white"
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
