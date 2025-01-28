@@ -12,9 +12,9 @@ import "global.css";
 export default function RootLayout() {
   //handle native and js exceptions and send them to the error handler.
 
-  setJSExceptionHandler((error, isFatal) => {
-    errorHandler(error);
-  }, true);
+  // setJSExceptionHandler((error, isFatal) => {
+  //   errorHandler(error);
+  // }, true);
 
   // setNativeExceptionHandler((exceptionString) => {
   //   errorHandler(exceptionString);
@@ -27,7 +27,7 @@ export default function RootLayout() {
     >
       <AppProviders>
         <ErrorFallbackComponent />
-        <Stack />
+        <Stack screenOptions={{ headerShown: false }} />
       </AppProviders>
     </ErrorBoundary>
   );

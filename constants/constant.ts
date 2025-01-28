@@ -1,0 +1,17 @@
+export const randomColors = [
+  "#B22222", // Firebrick (dull red)
+  "#228B22", // Forest Green (dull green)
+  "#4682B4", // Steel Blue (dull blue)
+  "#BDB76B", // Dark Khaki (dull yellow)
+  "#6A5ACD", // Slate Blue (dull purple)
+  "#D8BFD8", // Thistle (dull pink)
+  "#FF8C00", // Dark Orange (dull orange)
+  "#20B2AA", // Light Sea Green (dull teal)
+  "#4B0082", // Indigo (dull indigo)
+  "#A9A9A9", // Dark Gray (dull gray)
+  "#66CDAA", // Medium Aquamarine (dull spring green)
+  "#DAA520", // Goldenrod (dull gold)
+  "#40E0D0", // Turquoise (dull cyan)
+  "#C71585", // Medium Violet Red (dull magenta)
+  "#CD5C5C", // Indian Red (dull tomato)
+];

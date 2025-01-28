@@ -1,16 +1,140 @@
-import { Text, View } from "react-native";
+import React, { useState, useRef } from "react";
+import {
+  View,
+  TextInput,
+  Text,
+  Pressable,
+  Animated,
+  Easing,
+} from "react-native";
+import ContactSectionList from "components/ContactSectionList";
+import { IContact } from "types/contact";
+import { groupAndSortContacts, filterContacts } from "utils/contactUtils";
+import Feather from "@expo/vector-icons/Feather";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { contacts } from "constants/mockData";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 
-export default function Index() {
+export default function ContactList() {
+  const [search, setSearch] = useState("");
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const sections = groupAndSortContacts(contacts); // Group and sort contacts by the first letter of the name
+  const filteredSections = filterContacts(sections, search);
+
+  const slideAnim = useRef(new Animated.Value(-50)).current; // Initial slide value
+  const opacityAnim = useRef(new Animated.Value(0)).current; // Initial opacity
+  const contactListAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleSearchBar = () => {
+    if (isSearchActive) {
+      // Hide the search bar
+      setIsSearchActive(false);
+      setSearch("");
+
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: -50, // Slide out
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 0, // Fade out
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(contactListAnim, {
+          toValue: 0, // Move contact list back up
+          duration: 300,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ]).start(() => setIsSearchActive(false)); // Set state after animation completes
+    } else {
+      // Show the search bar
+      setIsSearchActive(true);
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: 0, // Slide in
+          duration: 300,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 1, // Fade in
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(contactListAnim, {
+          toValue: 10, // Move contact list down
+          duration: 300,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  };
+
+  const handleAddContact = () => {
+    router.push("/AddContact");
+  };
+
+  const handleSearchChange = (text: string) => {
+    setSearch(text);
+  };
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
+    <SafeAreaView className="flex-1 p-4 bg-primary-default">
+      {/* Header */}
+      <View className="flex-row items-center justify-between mb-5">
+        <Text className="text-white text-xl font-bold">Contacts</Text>
+        <View className="flex flex-row">
+          <Pressable className="mr-5" onPress={handleAddContact}>
+            <Feather name="plus" size={24} color="white" />
+          </Pressable>
+          <Pressable onPress={toggleSearchBar}>
+            {isSearchActive ? (
+              <AntDesign name="close" size={24} color="white" />
+            ) : (
+              <AntDesign name="search1" size={24} color="white" />
+            )}
+          </Pressable>
+        </View>
+      </View>
+
+      {/* Animated Search Bar */}
+      <Animated.View
+        style={{
+          transform: [{ translateY: slideAnim }],
+          opacity: opacityAnim,
+        }}
+      >
+        {isSearchActive && (
+          <View className="mb-5">
+            <TextInput
+              placeholder="Search..."
+              placeholderTextColor="#999"
+              value={search}
+              onChangeText={handleSearchChange}
+              style={{
+                backgroundColor: "#333",
+                color: "#fff",
+                padding: 10,
+                borderRadius: 8,
+              }}
+            />
+          </View>
+        )}
+      </Animated.View>
+
+      {/* Contact List */}
+      <Animated.View
+        style={{
+          transform: [{ translateY: contactListAnim }],
+        }}
+      >
+        <ContactSectionList sections={filteredSections} />
+      </Animated.View>
+    </SafeAreaView>
   );
 }
